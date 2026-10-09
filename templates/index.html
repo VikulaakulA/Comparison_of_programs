@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Поступление ДВФУ</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename=css_file) }}">
+    </head>
+<body>
+
+<header>
+    <div class='header-note2'>
+        <a href="?accessible={{ 'false' if accessible else 'true' }}">
+            {{ 'Обычная версия' if accessible else 'Версия для слабовидящих' }}</a>
+    </div>
+    <div class="header-note">
+        <a href="https://postupi.dvfu.ru" target="_blank">Подробнее: postupi.dvfu.ru</a>
+    </div>
+</header>
+
+<main class="container">
+    <img src="{{ url_for('static', filename='img/image.png') }}" alt="main_photo" class="responsive-img">
+    <div class="education-level">
+        <h2>Выберите нужную ступень образования</h2>
+    </div>
+    <div class="card-container">
+        <div class="card">
+            <img src="{{ url_for('static', filename='img/bakalavr.jpg') }}" alt="bachalor">
+            <div class="card-content">
+                <h3>Бакалавриат / Специалитет</h3>
+                <p>Срок обучения: 4–6 лет</p>
+                <a href="{{ url_for('filter_page', level='undergraduate', accessible='true' if accessible else 'false') }}" class="select-button">Выбрать</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="{{ url_for('static', filename='img/magistr.jpg') }}" alt="magistr">
+            <div class="card-content">
+                <h3>Магистратура</h3>
+                <p>Срок обучения: 2 года</p>
+                <a href="{{ url_for('filter_page', level='graduate', accessible='true' if accessible else 'false') }}" class="select-button">Выбрать</a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-boxes">
+        <div class="footer-box">
+            <h3>Телефон</h3>
+            <p>8-800-550-38-38</p>
+            <h3>Почта</h3>
+            <p>priem@dvfu.ru</p>
+        </div>
+
+        <div class="footer-box">
+            <h3>Время работы</h3>
+            <p>Пн–Пт: с 10:00 до 18:00</p>
+            <h3>Адрес</h3>
+            <p>о.Русский, Кампус ДВФУ, корпус А, уровень 4</p>
+        </div>
+
+        <div class="footer-box">
+            <h3>Соцсети</h3>
+            <div class="footer-icons">
+                <a href="https://t.me/tvoidvfu">
+                    <img src="{{ url_for('static', filename='img/telegram.png') }}" alt="Telegram">
+                </a>
+                <a href="https://vk.com/tvoidvfu">
+                    <img src="{{ url_for('static', filename='img/vk.png') }}" alt="VK">
+                </a>
+            </div>
+        </div>
+    </div>
+    <p>&copy; 2025 Университет. Все права защищены.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Программы - {{ 'Магистратура' if level == 'graduate' else 'Бакалавриат' }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% if accessible %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/accessible.css') }}">
+{% endif %}
+</head>
+<body>
+
+<header>
+  <h1>Программы {{ 'магистратуры' if level == 'graduate' else 'бакалавриата' }}</h1>
+  <div class="header-note2">
+    <nav>
+      <a href="{{ url_for('programs', level='undergraduate', accessible='true' if accessible else 'false') }}">Бакалавриат</a>
+      <a href="{{ url_for('programs', level='graduate', accessible='true' if accessible else 'false') }}">Магистратура</a>
+    </nav>
+  </div>
+  <div class="header-note">
+    <nav>
+    <a href="{{ url_for('index', accessible='true' if accessible else 'false') }}">Главная</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- Фильтры -->
+  <section class="filters">
+    <h2>Фильтры</h2>
+    <form method="POST" action="{{ url_for('programs', level=level, accessible='true' if accessible else 'false') }}">
+      <div class="filter-row">
+        <div class="filter-group">
+          <label for="min_passing_score">Мин. проходной балл:</label>
+          <input type="number" id="min_passing_score" name="min_passing_score"
+                 value="{{ filters.get('min_passing_score', '') }}" placeholder="от">
+        </div>
+        <div class="filter-group">
+          <label for="duration">Срок обучения:</label>
+          <select id="duration" name="duration">
+            <option value="">Все</option>
+            {% for dur in unique_durations %}
+              <option value="{{ dur }}" {% if filters.get('duration') == dur %}selected{% endif %}>{{ dur }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="min_budget_places">Мин. бюджетных мест:</label>
+          <input type="number" id="min_budget_places" name="min_budget_places"
+                 value="{{ filters.get('min_budget_places', '') }}" placeholder="от">
+        </div>
+        <div class="filter-group">
+          <label for="discipline">Дисциплина:</label>
+          <select id="discipline" name="discipline">
+            <option value="">Все</option>
+            {% for disc in unique_disciplines %}
+              <option value="{{ disc }}" {% if filters.get('discipline') == disc %}selected{% endif %}>{{ disc }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="filter-actions">
+        <button type="submit">Применить фильтры</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Список программ -->
+  <section class="programs-list">
+    <h2>Список программ</h2>
+    {% if programs %}
+      <table>
+        <thead>
+          <tr>
+            <th>Название</th><th>Срок</th><th>Проходной</th><th>Бюджет</th><th>Действия</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for program in programs %}
+          <tr>
+            <td>{{ program.name }}</td><td>{{ program.duration }}</td><td>{{ program.passing_score }}</td>
+            <td>{{ program.budget_places }}</td>
+            <td>
+              <div class="btn-group">
+                <a href="{{ url_for('program_detail', level=level, program_id=program.id, accessible='true' if accessible else 'false') }}" class="select-button">Подробнее</a>
+                <form action="{{ url_for('add_to_comparison', level=level, program_id=program.id, accessible='true' if accessible else 'false') }}" method="POST">
+                  <button type="submit">Сравнить</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="no-programs">Программы не найдены.</p>
+    {% endif %}
+  </section>
+
+  <!-- Переход к сравнению -->
+  <section class="comparison-link">
+    <a href="{{ url_for('compare', level=level, accessible='true' if accessible else 'false') }}" class="select-button">Перейти к сравнению</a>
+  </section>
+
+</main>
+</body>
+</html>

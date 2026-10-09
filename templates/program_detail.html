@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>{{ program.name }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% if accessible %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/accessible.css') }}">
+{% endif %}
+</head>
+<body>
+
+<header>
+  <h1>{{ program.name }}</h1>
+</header>
+
+<main class="container">
+  <a href="{{ url_for('programs', level=level, accessible='true' if accessible else 'false') }}" class="return-link">← Назад к программам</a>
+  <!-- Основные данные -->
+  <section class="program-details">
+            <h2>Основная информация</h2>
+            <p><strong>Код:</strong> {{ program.code }}</p>
+            <p><strong>Тип специальности:</strong> {{ program.specialty_type }}</p>
+            <p><strong>Форма обучения:</strong> {{ program.study_form }}</p>
+            <p><strong>Срок обучения:</strong> {{ program.duration }}</p>
+            <p><strong>Язык обучения:</strong> {{ program.language }}</p>
+            <p><strong>Стоимость обучения:</strong> {{ program.tuition_fee }}</p>
+
+            <!-- Красиво оформленные бюджетные места -->
+            <p><strong>Бюджетные места:</strong></p>
+            {% if program.budget_places and program.budget_places is iterable %}
+                <ul>
+                    {% for item in program.budget_places %}
+                        <li>{{ item.quota_type }}: {{ item.places }}</li>
+                    {% endfor %}
+                </ul>
+            {% elif program.budget_places %}
+                <p>{{ program.budget_places }}</p>
+            {% else %}
+                <p>Нет данных о бюджетных местах</p>
+            {% endif %}
+
+            <p><strong>Платные места:</strong> {{ program.paid_places }}</p>
+
+
+  <!-- Доп. блоки -->
+  {% if level == 'undergraduate' %}
+  <section class="program-block">
+    <h2>Минимальные баллы ЕГЭ</h2>
+    {% if program.min_scores %}
+      <ul>
+        {% for s in program.min_scores %}<li>{{ s.subject }}: {{ s.score }}</li>{% endfor %}
+      </ul>
+    {% else %}<p>Нет данных.</p>{% endif %}
+  </section>
+  <section class="program-block">
+    <h2>Проходные баллы</h2>
+    {% if program.passing_scores %}
+      <ul>
+        {% for s in program.passing_scores %}<li>{{ s.year }}: {{ s.score }}</li>{% endfor %}
+      </ul>
+    {% else %}<p>Нет данных.</p>{% endif %}
+  </section>
+  {% endif %}
+
+  <!-- Списки -->
+  {% for title, items in [
+    ['Дисциплины', program.disciplines],
+    ['Профессии', program.professions],
+    ['Практика', program.practices],
+    ['Выпускники', program.graduates]
+  ] %}
+    <section class="program-block">
+      <h2>{{ title }}</h2>
+      {% if items %}
+        <ul>{% for x in items %}<li>{{ x }}</li>{% endfor %}</ul>
+      {% else %}
+        <p>Нет данных.</p>
+      {% endif %}
+    </section>
+  {% endfor %}
+
+  <!-- Контакты -->
+  <section class="program-block">
+    <h2>Контакты</h2>
+    {% if program.contacts %}
+      <ul>{% for c in program.contacts %}<li>{{ c.get('contact_info', 'Не указано') }}</li>{% endfor %}</ul>
+    {% else %}
+      <p>Нет контактной информации.</p>
+    {% endif %}
+  </section>
+  </section>
+</main>
+
+<footer>
+  <p>&copy; 2025 Университет. Все права защищены.</p>
+</footer>
+</body>
+</html>
